@@ -84,6 +84,7 @@ class ResponsibleProvider extends ChangeNotifier {
 
   }
 
+
   Responsible findByName(String name) =>
       responsibles.firstWhere(
             (responsible) => responsible.nome == name,

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:lista_de_tarefas/providers/responsible_provider.dart';
 import '../consts.dart';
+import '../models/responsible.dart';
 import '../models/task.dart';
 
 class TaskProvider extends ChangeNotifier{
@@ -31,7 +32,7 @@ class TaskProvider extends ChangeNotifier{
       }
       notifyListeners();
     }else{
-      throw const HttpException('Erro ao tentar conectar com o servidor fetch');
+      throw const HttpException('Erro ao tentar conectar com o servidor');
     }
   }
 
@@ -52,7 +53,7 @@ class TaskProvider extends ChangeNotifier{
       notifyListeners();
       return task;
     }else{
-      throw const HttpException("Erro ao tentar conectar com o servidor create");
+      throw const HttpException("Erro ao tentar conectar com o servidor");
     }
 
   }
@@ -74,7 +75,7 @@ class TaskProvider extends ChangeNotifier{
       notifyListeners();
       return updatedTask;
     }else{
-      throw const HttpException("Erro ao tentar conectar com o servidor create");
+      throw const HttpException("Erro ao tentar conectar com o servidor");
     }
 
   }
@@ -90,9 +91,10 @@ class TaskProvider extends ChangeNotifier{
       tasks.removeWhere((task)=> task.id == taskId);
       notifyListeners();
     }else{
-      throw const HttpException("Erro ao tentar conectar com o servidor create");
+      throw const HttpException("Erro ao tentar conectar com o servidor");
     }
 
   }
+
 
 }

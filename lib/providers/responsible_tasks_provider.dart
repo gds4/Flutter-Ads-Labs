@@ -38,4 +38,26 @@ class ResponsibleTasksProvider extends ChangeNotifier{
       throw const HttpException("Erro ao tentar conectar com o servidor");
     }
   }
+
+  Future<void> fetchPendingTasks(Responsible responsible) async{
+    final url = 'http://$localhost:$port/tarefa/pendente/${responsible.id}';
+    final response = await http.get(Uri.parse(url));
+
+    if(response.statusCode == 200){
+      final data = json.decode(response.body);
+      final List<dynamic> tasksData = data['tarefas'];
+
+      tasks = tasksData.map((item) => Task.fromJson(item)).toList();
+      for (var task in tasks) {
+        if(task.responsavelId != null){
+          task.setResponsavel(responsible);
+        }
+
+      }
+      notifyListeners();
+    }else{
+      throw const HttpException('Erro ao tentar conectar com o servidor');
+    }
+  }
+
 }

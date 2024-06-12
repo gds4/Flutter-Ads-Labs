@@ -3,13 +3,14 @@ import 'package:intl/intl.dart';
 import 'package:lista_de_tarefas/providers/responsible_tasks_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../models/responsible.dart';
 import '../models/task.dart';
 
 class ResponsiblePage extends StatefulWidget{
 
+  final Responsible responsible;
 
-
-  const ResponsiblePage({super.key});
+  const ResponsiblePage({super.key, required this.responsible});
 
 
 
@@ -22,6 +23,8 @@ class ResponsiblePageState extends State<ResponsiblePage>{
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
 
+  bool _pendingTasksIsPressed = false;
+  IconData icon = Icons.timelapse;
 
   @override
   void initState() {
@@ -39,19 +42,42 @@ class ResponsiblePageState extends State<ResponsiblePage>{
 
   @override
   Widget build(BuildContext context) {
-    final taskProvider = Provider.of<ResponsibleTasksProvider>(context, listen: false);
+    final responsibleTasksProvider = Provider.of<ResponsibleTasksProvider>(context, listen: false);
     return ChangeNotifierProvider(
       create: (context) => ResponsibleTasksProvider(),
       child: Scaffold(
         appBar: AppBar(
+          actions: [
+            IconButton(
+              onPressed: () async {
+
+                  if(_pendingTasksIsPressed == true){
+                    await responsibleTasksProvider.fetchTasks();
+                 }else{
+                    await responsibleTasksProvider.fetchPendingTasks(widget.responsible);
+                  }
+                  _pendingTasksIsPressed = !_pendingTasksIsPressed;
+                  setState(()  {
+                    responsibleTasksProvider.tasks;
+                  });
+              },
+              icon: Icon(_pendingTasksIsPressed ?  Icons.list : Icons.timelapse),
+            ),
+          ],
+          leading:  IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+            },
+              icon: const  Icon(Icons.arrow_back_ios),
+          ),
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(10))),
           elevation: 1.0,
           shadowColor: Colors.grey,
           backgroundColor: Colors.red[300],
-          title: Text(taskProvider.responsible!.nome),
+          title: Text(responsibleTasksProvider.responsible!.nome),
 
         ),
-        body: taskProvider.tasks.isEmpty
+        body: responsibleTasksProvider.tasks.isEmpty
             ? Center(child: Container(
           margin: const EdgeInsets.all(16.0),
           padding: const EdgeInsets.all(16.0),
@@ -87,9 +113,9 @@ class ResponsiblePageState extends State<ResponsiblePage>{
           ),
         ))
             : ListView.builder(
-            itemCount: taskProvider.tasks.length,
+            itemCount: responsibleTasksProvider.tasks.length,
             itemBuilder: (context, index) {
-              final task = taskProvider.tasks[index];
+              final task = responsibleTasksProvider.tasks[index];
               return GestureDetector(
                 child: Container(
                   margin: const EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),

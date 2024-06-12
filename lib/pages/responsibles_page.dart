@@ -16,13 +16,16 @@ class ResponsiblesPage extends StatefulWidget {
 }
 
 class ResponsiblesPageState extends State<ResponsiblesPage> {
+
+
+
   @override
   Widget build(BuildContext context) {
     final responsibleProvider = Provider.of<ResponsibleProvider>(context);
-    final responsibleTasksProvider =
-        Provider.of<ResponsibleTasksProvider>(context);
+    final responsibleTasksProvider = Provider.of<ResponsibleTasksProvider>(context);
     return Scaffold(
       appBar: AppBar(
+
         centerTitle: true,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomRight: Radius.circular(15))),
         elevation: 1.0,
@@ -65,7 +68,7 @@ class ResponsiblesPageState extends State<ResponsiblesPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const ResponsiblePage()));
+                                  builder: (context) => ResponsiblePage(responsible: responsible,)));
                         }
                       },
                       child: Row(

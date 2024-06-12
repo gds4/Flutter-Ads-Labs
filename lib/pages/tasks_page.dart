@@ -35,17 +35,19 @@ class TasksPageState extends State<TasksPage> {
     super.dispose();
   }
 
-  void _onTapDown(TapDownDetails details){
+  void _onTapDown(TapDownDetails details) {
     setState(() {
       _isPressed = true;
     });
   }
-  void _onTapUp(TapUpDetails details){
+
+  void _onTapUp(TapUpDetails details) {
     setState(() {
       _isPressed = false;
     });
   }
-  void _onTapCancel(){
+
+  void _onTapCancel() {
     setState(() {
       _isPressed = false;
     });
@@ -59,13 +61,19 @@ class TasksPageState extends State<TasksPage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15))),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15))),
         elevation: 1.0,
         shadowColor: Colors.grey,
         centerTitle: true,
         backgroundColor: Colors.amberAccent,
-        title: const Text("Tarefas",style: TextStyle(fontSize: 22,
-          fontWeight: FontWeight.bold,),),
+        title: const Text(
+          "Tarefas",
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: taskProvider.tasks.isEmpty
           ? const Center(child: CircularProgressIndicator())
@@ -78,12 +86,11 @@ class TasksPageState extends State<TasksPage> {
                   //onTapUp: _onTapUp,
                   //onTapCancel: _onTapCancel,
                   child: Container(
-                    margin: const EdgeInsets.only(top: 5, bottom: 5,left: 10,right: 10),
+                    margin: const EdgeInsets.only(
+                        top: 5, bottom: 5, left: 10, right: 10),
                     child: Ink(
                       decoration: BoxDecoration(
-
                           boxShadow: [
-
                             BoxShadow(
                               color: Colors.black.withOpacity(0.1),
                               blurRadius: 2,
@@ -94,7 +101,7 @@ class TasksPageState extends State<TasksPage> {
                           color: Colors.white),
                       child: InkWell(
                         borderRadius: BorderRadius.circular(10),
-                        onTap: (){
+                        onTap: () {
                           _titleController.text = task.titulo;
                           if (task.descricao != null) {
                             _descriptionController.text = task.descricao!;
@@ -145,7 +152,6 @@ class TasksPageState extends State<TasksPage> {
                 );
               }),
       floatingActionButton: FloatingActionButton(
-
         backgroundColor: Colors.amberAccent,
         child: const Icon(Icons.add),
         onPressed: () {
@@ -279,7 +285,6 @@ class TasksPageState extends State<TasksPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-
               const Flexible(
                 child: Text(
                   "Deseja finalizar a tarefa?",
@@ -322,9 +327,10 @@ class TasksPageState extends State<TasksPage> {
                         Navigator.pop(context);
                       }
                     },
-                    child: const Text("Finalizar",style: TextStyle(
-                      color: Colors.white
-                    ),),
+                    child: const Text(
+                      "Finalizar",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -338,9 +344,10 @@ class TasksPageState extends State<TasksPage> {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: const Text("Cancelar",style: TextStyle(
-                        color: Colors.white
-                    ),),
+                    child: const Text(
+                      "Cancelar",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ],
               ),

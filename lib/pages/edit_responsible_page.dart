@@ -42,6 +42,12 @@ class EditResponsiblePageState extends State<EditResponsiblePage>{
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          leading:  IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const  Icon(Icons.arrow_back_ios),
+          ),
           centerTitle: true,
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(10))),
           elevation: 1.0,
