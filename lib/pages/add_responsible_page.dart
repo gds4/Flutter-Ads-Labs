@@ -4,6 +4,7 @@ import 'package:lista_de_tarefas/models/responsible.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/responsible_provider.dart';
+import '../validators/responsible_validators.dart';
 
 class AddResponsiblePage extends StatefulWidget{
   const AddResponsiblePage({super.key});
@@ -99,9 +100,7 @@ class AddResponsiblePageState extends State<AddResponsiblePage>{
                   filled: true,
                   fillColor: Colors.white,
                 ),
-                validator: (titulo) => titulo!.length < 3
-                    ? "O nome deve possuir no mínimo 3 caracteres"
-                    : null,
+                validator: (value)=> ResponsibleValidators.nameValidators(value!),
               ),
             ],
           ),
@@ -136,36 +135,12 @@ class AddResponsiblePageState extends State<AddResponsiblePage>{
                   borderRadius: BorderRadius.circular(15),
                   borderSide: BorderSide.none),
             ),
-            validator: (date) => dateValidators(date),
+            validator: (date) => ResponsibleValidators.dateValidators(date),
           ),
         ]));
   }
 
-  String? minimumAge(String? value){
-    if(DateFormat("dd/MM/yyyy").parse(value!).year > 2014){
-      return "2014: ano mínimo de nascimento";
-    }
-    return null;
-  }
 
-  String? dateIsNull(String? value){
-    if(value ==null){
-      return "Forneça uma data de nascimento";
-    }
-    return null;
-  }
-
-  String? dateValidators(String? value){
-    var validators = [ dateIsNull, minimumAge];
-    for(var validator in validators){
-      final result = validator(value);
-
-      if(result != null){
-        return result;
-      }
-    }
-    return null;
-  }
 
 
   Future<void> selectedDate() async {
@@ -190,6 +165,7 @@ class AddResponsiblePageState extends State<AddResponsiblePage>{
           children: [
             const SizedBox(height: 10,),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red[300]),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     try {
@@ -212,7 +188,7 @@ class AddResponsiblePageState extends State<AddResponsiblePage>{
                     }
                   }
                 },
-                child: const Text("Criar Responsável")),
+                child: const Text("Criar Responsável", style: TextStyle(color: Colors.black),)),
           ],
         )
     );

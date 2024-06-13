@@ -10,7 +10,7 @@ class Task {
   late final String status;
   final DateTime dataConclusao;
   final bool? finalizado;
-  final bool? expirado;
+  late final bool expirado;
 
   Task({
     this.id,
@@ -20,12 +20,13 @@ class Task {
     this.responsavelId,
     required this.dataConclusao,
     this.finalizado,
-    this.expirado
   }){
-    if(finalizado == null || expirado == null){
+    DateTime today = DateTime.now();
+    expirado = dataConclusao.isBefore(today);
+    if(finalizado == null){
       status = 'undefined';
     }else{
-      status = (finalizado! ? 'finalizado' : (expirado! ? 'Expirou' : 'Em aberto'));
+      status = (finalizado! ? 'finalizado' : (expirado ? 'Expirou' : 'Em aberto'));
     }
   }
 
@@ -40,7 +41,7 @@ class Task {
     responsavelId: json['responsavel'],
     dataConclusao: DateTime.parse(json['data_conclusao']),
     finalizado: json['finalizado'],
-    expirado: json['expirou']
+
   );
 
   Map<String, dynamic> jsonToCreate(){

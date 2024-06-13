@@ -22,6 +22,7 @@ class ResponsiblePage extends StatefulWidget{
 class ResponsiblePageState extends State<ResponsiblePage>{
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
+  late final TextEditingController _responsibleNameController;
 
   bool _pendingTasksIsPressed = false;
   IconData icon = Icons.timelapse;
@@ -31,12 +32,14 @@ class ResponsiblePageState extends State<ResponsiblePage>{
     super.initState();
     _titleController = TextEditingController();
     _descriptionController = TextEditingController();
+    _responsibleNameController = TextEditingController();
   }
 
   @override
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
+    _responsibleNameController.dispose();
     super.dispose();
   }
 
@@ -135,12 +138,9 @@ class ResponsiblePageState extends State<ResponsiblePage>{
                     child: InkWell(
                       borderRadius: BorderRadius.circular(10),
                       onTap: () async{
+                        _responsibleNameController.text = task.responsavel!.nome;
+                        _descriptionController.text = task.descricao != null ? task.descricao! : "";
                         _titleController.text = task.titulo;
-                        if (task.descricao != null) {
-                          _descriptionController.text = task.descricao!;
-                        } else {
-                          _descriptionController.text = "";
-                        }
                         await openTask(task);
                       },
                       child: Row(
@@ -219,7 +219,7 @@ class ResponsiblePageState extends State<ResponsiblePage>{
                     controller: _descriptionController,
                     maxLines: 10,
                   ),
-
+                  Text("Responsável: ${_responsibleNameController.text}", style: TextStyle(color: Colors.grey[800]),)
                 ],
               ),
             ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lista_de_tarefas/models/responsible.dart';
 import 'package:lista_de_tarefas/models/task.dart';
+import 'package:lista_de_tarefas/validators/task_validators.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/responsible_provider.dart';
@@ -24,7 +25,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
   late final FocusNode _focusNodeDescription;
 
   final _formKey = GlobalKey<FormState>();
-
 
   @override
   void initState() {
@@ -52,24 +52,25 @@ class _AddTaskPageState extends State<AddTaskPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading:  IconButton(
+        leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const  Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_ios),
         ),
         centerTitle: true,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(10))),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(10))),
         elevation: 1.0,
         shadowColor: Colors.grey,
         backgroundColor: Colors.amberAccent,
-          title: const Text(
-            "Nova Tarefa",
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
+        title: const Text(
+          "Nova Tarefa",
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
           ),
+        ),
       ),
       body: Form(
         key: _formKey,
@@ -80,7 +81,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
             responsibleDropDown(),
             completionDateField(),
             submitButton()
-
           ],
         ),
       ),
@@ -89,82 +89,79 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   Widget titleField() {
     return GestureDetector(
-      onTap: () {
-        _focusNodeTitle.unfocus();
-      },
-      child: Container(
-      margin: const EdgeInsets.only(left: 20, right: 20, top: 40, bottom: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Título",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
+        onTap: () {
+          _focusNodeTitle.unfocus();
+        },
+        child: Container(
+          margin:
+              const EdgeInsets.only(left: 20, right: 20, top: 40, bottom: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Título",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextFormField(
+                focusNode: _focusNodeTitle,
+                controller: _titleController,
+                decoration: InputDecoration(
+                  hintText: "Título",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                validator: (value) => TaskValidators.titleValidators(value!),
+              ),
+            ],
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          TextFormField(
-            focusNode: _focusNodeTitle,
-            controller: _titleController,
-            decoration: InputDecoration(
-              hintText: "Título",
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide.none),
-              filled: true,
-              fillColor: Colors.white,
-            ),
-            validator: (titulo) => titulo!.length < 3
-                ? "O título deve possuir no mínimo 3 caracteres"
-                : null,
-          ),
-        ],
-      ),
-    ));
+        ));
   }
 
   Widget descriptionField() {
     return GestureDetector(
-      onTap: () {
-        _focusNodeDescription.unfocus();
-      },
-    child: Container(
-
-      margin: const EdgeInsets.only(
-        left: 20,
-        right: 20,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Descrição",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+        onTap: () {
+          _focusNodeDescription.unfocus();
+        },
+        child: Container(
+          margin: const EdgeInsets.only(
+            left: 20,
+            right: 20,
           ),
-          const SizedBox(
-            height: 10,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Descrição",
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextField(
+                focusNode: _focusNodeDescription,
+                controller: _descriptionController,
+                maxLines: null,
+                decoration: InputDecoration(
+                  hintText: "Digite aqui a descrição da tarefa",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+              ),
+            ],
           ),
-          TextField(
-            focusNode: _focusNodeDescription,
-            controller: _descriptionController,
-            maxLines: null,
-            decoration: InputDecoration(
-              hintText: "Digite aqui a descrição da tarefa",
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide.none),
-              filled: true,
-              fillColor: Colors.white,
-            ),
-          ),
-        ],
-      ),
-    )
-    );
+        ));
   }
 
   Widget responsibleDropDown() {
@@ -191,22 +188,19 @@ class _AddTaskPageState extends State<AddTaskPage> {
               valueListenable: _responsibleValue,
               builder: (BuildContext context, String value, _) {
                 return SizedBox(
-
                   child: DropdownButtonFormField<String>(
-
                     isExpanded: true,
                     value: (value.isEmpty) ? null : value,
                     hint: const Text("Escolha um responsável"),
-
                     decoration: InputDecoration(
                       icon: const Icon(Icons.person),
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide.none,),
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
-
                     items: responsibleProvider.responsibles
                         .map((responsible) => responsible.nome)
                         .map((nome) =>
@@ -214,7 +208,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         .toList(),
                     onChanged: (responsible) =>
                         {_responsibleValue.value = responsible.toString()},
-                    validator: (value)=>  value == null || value.isEmpty  ? "Selecione um responsável" : null,
+                    validator: (value) => value == null || value.isEmpty
+                        ? "Selecione um responsável"
+                        : null,
                   ),
                 );
               }),
@@ -222,7 +218,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
       ),
     );
   }
-
 
   Widget completionDateField() {
     return Container(
@@ -238,11 +233,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
           const SizedBox(
             height: 10,
           ),
-          TextField(
+          TextFormField(
             controller: _dateController,
             readOnly: true,
             onTap: () => selectedDate(),
-
             decoration: InputDecoration(
               icon: const Icon(Icons.calendar_month),
               hintText: "Selecione o prazo de conclusão ",
@@ -252,66 +246,72 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   borderRadius: BorderRadius.circular(15),
                   borderSide: BorderSide.none),
             ),
+            validator: (value) => TaskValidators.dateValidators(value),
           ),
         ]));
   }
 
   Future<void> selectedDate() async {
-      _completionDate = await showDatePicker(
-        context: context,
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2100),
-      );
+    _completionDate = await showDatePicker(
+      context: context,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
 
-      if(_completionDate != null){
-        setState(() {
-          _dateController.text = DateFormat("dd/MM/yyyy").format(_completionDate!);
-        });
-      }
-
+    if (_completionDate != null) {
+      setState(() {
+        _dateController.text =
+            DateFormat("dd/MM/yyyy").format(_completionDate!);
+      });
+    }
   }
 
   Widget submitButton() {
     final responsibleProvider = Provider.of<ResponsibleProvider>(context);
     final taskProvider = Provider.of<TaskProvider>(context);
     return Center(
-      child: Column(
-        children: [
-          const SizedBox(height: 10,),
-          ElevatedButton(
-              onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  try {
-                    Responsible responsible = responsibleProvider.findByName(_responsibleValue.value);
+        child: Column(
+      children: [
+        const SizedBox(
+          height: 10,
+        ),
+        ElevatedButton(
+            style:
+                ElevatedButton.styleFrom(backgroundColor: Colors.amberAccent),
+            onPressed: () async {
+              if (_formKey.currentState!.validate()) {
+                try {
+                  Responsible responsible =
+                      responsibleProvider.findByName(_responsibleValue.value);
 
-                    var task = Task(
-                      titulo: _titleController.text,
-                      descricao: _descriptionController.text,
-                      responsavelId: responsible.id!,
-                      dataConclusao: _completionDate!,
+                  var task = Task(
+                    titulo: _titleController.text,
+                    descricao: _descriptionController.text,
+                    responsavelId: responsible.id!,
+                    dataConclusao: _completionDate!,
+                  );
+
+                  Task createdTask = await taskProvider.createTask(task);
+                  createdTask.setResponsavel(responsible);
+
+                  await taskProvider.fetchTasks(responsibleProvider);
+
+                  if (mounted) {
+                    Navigator.pop(context);
+                  }
+                } on Exception catch (e) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content:
+                              Text("Erro ao criar a tarefa: ${e.toString()}"),),
                     );
-
-                    Task createdTask = await taskProvider.createTask(task);
-                    createdTask.setResponsavel(responsible);
-
-                    await taskProvider.fetchTasks(responsibleProvider);
-
-                    if (mounted) {
-                      Navigator.pop(context);
-                    }
-                  } on Exception catch (e) {
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Erro ao criar a tarefa: ${e.toString()}")),
-                      );
-                    }
                   }
                 }
-              },
-              child: const Text("Criar Tarefa")),
-        ],
-      )
-    );
+              }
+            },
+            child: const Text("Criar Tarefa", style: TextStyle(color: Colors.black),)),
+      ],
+    ));
   }
-
 }

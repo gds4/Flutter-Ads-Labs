@@ -287,6 +287,7 @@ class EditTaskPageState extends State<EditTaskPage>{
           children: [
             const SizedBox(height: 10,),
             ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.amberAccent),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     try {
@@ -317,7 +318,7 @@ class EditTaskPageState extends State<EditTaskPage>{
                     }
                   }
                 },
-                child: const Text("Salvar")),
+                child: const Text("Salvar", style: TextStyle(color: Colors.black),)),
           ],
         )
     );

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:lista_de_tarefas/providers/responsible_provider.dart';
 import '../consts.dart';
-import '../models/responsible.dart';
 import '../models/task.dart';
 
 class TaskProvider extends ChangeNotifier{

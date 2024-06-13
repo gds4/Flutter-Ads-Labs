@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lista_de_tarefas/pages/responsible_page.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import '../models/responsible.dart';
 import '../providers/responsible_provider.dart';
@@ -42,24 +43,24 @@ class ResponsiblesPageState extends State<ResponsiblesPage> {
                 final responsible = responsibleProvider.responsibles[index];
                 return Container(
 
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
 
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 2,
-                        offset: const Offset(2, 2),
-                      ),
-                    ],
-                    border: const Border(bottom: BorderSide(
-                      color: Colors.grey
-                    )),
-                  ),
 
                   margin: const EdgeInsets.only(top: 5, bottom: 5),
                   child: Ink(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
 
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 2,
+                          offset: const Offset(2, 2),
+                        ),
+                      ],
+                      border: const Border(bottom: BorderSide(
+                          color: Colors.grey
+                      )),
+                    ),
                     child: InkWell(
                       onTap: () async {
                         responsibleTasksProvider.setResponsible(responsible);
@@ -93,9 +94,11 @@ class ResponsiblesPageState extends State<ResponsiblesPage> {
                             onPressed: () {
                               Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                      builder: (context) => EditResponsiblePage(
-                                          responsible: responsible)));
+                                  PageTransition(
+                                    child:  EditResponsiblePage(responsible: responsible),
+                                    type: PageTransitionType.rightToLeft,
+                                    duration: const Duration(milliseconds: 400),
+                                  ));
                             },
                             icon: const Icon(Icons.edit),
                           ),
@@ -118,8 +121,13 @@ class ResponsiblesPageState extends State<ResponsiblesPage> {
         onPressed: () {
           Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => const AddResponsiblePage()));
+              PageTransition(
+                  child: const AddResponsiblePage(),
+                  type: PageTransitionType.size,
+                  alignment: Alignment.bottomRight,
+                  duration: const Duration(milliseconds: 400),
+              ),
+          );
         },
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lista_de_tarefas/models/task.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/responsible_provider.dart';
@@ -18,45 +19,27 @@ class TasksPage extends StatefulWidget {
 class TasksPageState extends State<TasksPage> {
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
+  late final TextEditingController _responsibleNameController;
 
-  bool _isPressed = false;
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController();
     _descriptionController = TextEditingController();
+    _responsibleNameController = TextEditingController();
   }
 
   @override
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
+    _responsibleNameController.dispose();
     super.dispose();
-  }
-
-  void _onTapDown(TapDownDetails details) {
-    setState(() {
-      _isPressed = true;
-    });
-  }
-
-  void _onTapUp(TapUpDetails details) {
-    setState(() {
-      _isPressed = false;
-    });
-  }
-
-  void _onTapCancel() {
-    setState(() {
-      _isPressed = false;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
-
     final taskProvider = Provider.of<TaskProvider>(context);
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -81,82 +64,97 @@ class TasksPageState extends State<TasksPage> {
               itemCount: taskProvider.tasks.length,
               itemBuilder: (context, index) {
                 final task = taskProvider.tasks[index];
-                return GestureDetector(
-                  //onTapDown: _onTapDown,
-                  //onTapUp: _onTapUp,
-                  //onTapCancel: _onTapCancel,
-                  child: Container(
-                    margin: const EdgeInsets.only(
-                        top: 5, bottom: 5, left: 10, right: 10),
-                    child: Ink(
-                      decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 2,
-                              offset: const Offset(2, 2),
-                            ),
-                          ],
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(10),
-                        onTap: () {
-                          _titleController.text = task.titulo;
-                          if (task.descricao != null) {
-                            _descriptionController.text = task.descricao!;
-                          } else {
-                            _descriptionController.text = "";
-                          }
 
-                          openTask(task);
-                        },
-                        child: ListTile(
-                          leading: CircleAvatar(
+                return Container(
+                  margin: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+                  child: Ink(
+                    decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 2,
+                            offset: const Offset(2, 2),
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white),
+                    child: InkWell(
+
+                      onTap: (){
+
+                        _responsibleNameController.text = task.responsavel != null ? task.responsavel!.nome: "Não Possui";
+                        _descriptionController.text = task.descricao != null ? task.descricao! : "";
+                        _titleController.text = task.titulo;
+
+                        openTask(task);
+
+                      },
+                      borderRadius: BorderRadius.circular(10),
+
+                      child: Row(
+                        children: [
+                          const SizedBox(width: 15),
+                          CircleAvatar(
                             backgroundColor: task.getColor()[300],
                             child: Icon(task.getIcon()),
                           ),
-                          title: Text(
-                            task.titulo,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Column(children: [
-                            Row(children: [
-                              const Icon(Icons.person),
-                              const SizedBox(width: 5),
-                              Expanded(
-                                child: Text(
-                                  "Responsável: ${task.responsavel != null ? task.responsavel?.nome : "Não possui"}",
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                          Flexible(
+                            child: ListTile(
+
+                              title: Text(
+                                task.titulo,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Column(children: [
+                                Row(children: [
+                                  const Icon(Icons.person),
+                                  const SizedBox(width: 5),
+                                  Expanded(
+                                    child: Text(
+                                      "Responsável: ${task.responsavel != null ? task.responsavel?.nome : "Não possui"}",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  )
+                                ]),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.calendar_month),
+                                    const SizedBox(width: 5),
+                                    Text(
+                                        "Prazo: ${DateFormat("dd/MM/yyyy").format(task.dataConclusao)}")
+                                  ],
                                 ),
-                              )
-                            ]),
-                            Row(
-                              children: [
-                                const Icon(Icons.calendar_month),
-                                const SizedBox(width: 5),
-                                Text(
-                                    "Prazo: ${DateFormat("dd/MM/yyyy").format(task.dataConclusao)}")
-                              ],
+                              ]),
+
                             ),
-                          ]),
-                          trailing: const Icon(Icons.remove_red_eye_sharp),
-                        ),
+
+                          ),
+                          const Icon(Icons.remove_red_eye_sharp),
+                          const SizedBox(width: 15),
+                        ],
                       ),
                     ),
                   ),
                 );
               }),
       floatingActionButton: FloatingActionButton(
+        isExtended: true,
         backgroundColor: Colors.amberAccent,
         child: const Icon(Icons.add),
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddTaskPage()));
+          Navigator.push(
+            context,
+            PageTransition(
+              child: const AddTaskPage(),
+              type: PageTransitionType.size,
+              alignment: Alignment.bottomRight,
+              duration: const Duration(milliseconds: 400),
+            ),
+          );
         },
       ),
     );
@@ -193,13 +191,22 @@ class TasksPageState extends State<TasksPage> {
                     controller: _descriptionController,
                     maxLines: 10,
                   ),
+
+
+                  Text("Responsável: ${_responsibleNameController.text}", style: TextStyle(color: Colors.grey[800]),),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
                         onPressed: () async {
-                          await endTaskAlert(context, task);
-
+                          if(task.expirado){
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text("Essa tarefa já expirou e não pode ser finalizada")),
+                            );
+                          }else{
+                            await endTaskAlert(context, task);
+                          }
                           if (context.mounted) {
                             Navigator.pop(context);
                           }
@@ -209,26 +216,39 @@ class TasksPageState extends State<TasksPage> {
                           shadowColor: Colors.grey,
                           shape: const CircleBorder(),
                           child: CircleAvatar(
-                            backgroundColor: Colors.green[400],
+                            backgroundColor: task.expirado ? Colors.grey : Colors.green[400],
                             child: const Icon(Icons.check, color: Colors.white),
                           ),
                         ),
                       ),
                       IconButton(
                         onPressed: () {
+
+                          if(task.expirado){
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Essa tarefa já expirou e não pode ser editada")),
+                          );
                           Navigator.pop(context);
-                          Navigator.push(
+                        }else{
+                            Navigator.pop(context);
+                            Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => EditTaskPage(task: task),
-                              ));
+                              PageTransition(
+                                child: EditTaskPage(task: task),
+                                type: PageTransitionType.size,
+                                alignment: Alignment.center,
+                                duration: const Duration(milliseconds: 400),
+                              ),
+                            );
+                        }
+
                         },
                         icon: Material(
                           elevation: 5.0,
                           shadowColor: Colors.grey,
                           shape: const CircleBorder(),
                           child: CircleAvatar(
-                            backgroundColor: Colors.orange[400],
+                            backgroundColor: task.expirado ? Colors.grey : Colors.orange[400],
                             child: const Icon(Icons.edit, color: Colors.white),
                           ),
                         ),
@@ -265,6 +285,12 @@ class TasksPageState extends State<TasksPage> {
     final taskProvider = Provider.of<TaskProvider>(context, listen: false);
     final responsibleProvider =
         Provider.of<ResponsibleProvider>(context, listen: false);
+    final String dialogText;
+    if(task.finalizado == true){
+      dialogText = "Deseja reverter a finalização da tarefa?";
+    }else{
+      dialogText = "Deseja finalizar a tarefa?";
+    }
 
     return showDialog(
       context: context,
@@ -280,16 +306,16 @@ class TasksPageState extends State<TasksPage> {
           ),
         ),
         content: SizedBox(
-          height: 100,
+          height: 120,
           width: 300,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Flexible(
+              Flexible(
                 child: Text(
-                  "Deseja finalizar a tarefa?",
+                  dialogText,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                   ),
                 ),
@@ -316,7 +342,6 @@ class TasksPageState extends State<TasksPage> {
                         responsavel: task.responsavel,
                         dataConclusao: task.dataConclusao,
                         finalizado: !task.finalizado!,
-                        expirado: task.expirado,
                       );
 
                       completedTask =
@@ -328,7 +353,7 @@ class TasksPageState extends State<TasksPage> {
                       }
                     },
                     child: const Text(
-                      "Finalizar",
+                      "Continuar",
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
