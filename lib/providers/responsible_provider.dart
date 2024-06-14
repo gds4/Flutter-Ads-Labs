@@ -98,6 +98,6 @@ class ResponsibleProvider extends ChangeNotifier {
             (responsible) => responsible.id == id,
         orElse: () =>
         throw Exception(
-            "Nenhum responsável encontrado com o nome fornecido"), // orElse agora retorna null que é permitido
+            "Nenhum responsável encontrado com o id fornecido"), // orElse agora retorna null que é permitido
       );
 }
