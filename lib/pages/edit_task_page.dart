@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lista_de_tarefas/validators/task_validators.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/responsible_provider.dart';
@@ -125,9 +126,7 @@ class EditTaskPageState extends State<EditTaskPage>{
                   filled: true,
                   fillColor: Colors.white,
                 ),
-                validator: (title) => title!.length < 3
-                    ? "O título deve possuir no mínimo 3 caracteres"
-                    : null,
+                validator: (value) => TaskValidators.titleValidators(value!)
               ),
             ],
           ),
